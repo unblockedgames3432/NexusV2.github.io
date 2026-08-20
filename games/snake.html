@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Snake — Nexusv2</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/game.css" />
+</head>
+<body>
+
+  <div class="bg-stage">
+    <div class="aura aura-a"></div>
+    <div class="aura aura-b"></div>
+  </div>
+  <div class="vignette"></div>
+  <div class="noise"></div>
+
+  <header class="gbar">
+    <a class="gbar-back" href="../home.html">← Nexus</a>
+    <span class="gbar-name">Snake</span>
+  </header>
+
+  <main class="gwrap">
+    <div class="gbox">
+      <canvas id="game" width="480" height="480"></canvas>
+    </div>
+    <div class="gstats">
+      <span>Score <span class="gstat" id="score">0</span></span>
+      <span>·</span>
+      <span>Best <span class="gstat" id="best">0</span></span>
+    </div>
+    <div class="gopts">
+      <button class="gbtn" id="btn-start">Start</button>
+    </div>
+    <p class="ghelp">WASD or arrow keys to steer · grow, don't hit yourself or the wall</p>
+  </main>
+
+  <footer class="gfoot">Nexusv2 · Snake</footer>
+
+  <script src="../js/theme.js"></script>
+  <script>
+    (function () {
+      const cvs = document.getElementById('game');
+      const ctx = cvs.getContext('2d');
+      const N = 20, CELL = cvs.width / N;
+      const elScore = document.getElementById('score');
+      const elBest = document.getElementById('best');
+      const btnStart = document.getElementById('btn-start');
+
+      const ACCENT = function (a, b) {
+        const c = getComputedStyle(document.documentElement);
+        return c.getPropertyValue(a).trim() || c.getPropertyValue(b).trim();
+      };
+
+      let snake, dir, nextDir, food, score, best = Number(localStorage.getItem('nx_snake_best') || 0);
+      let running = false, over = false, speedMs = 120, timer = null;
+      elBest.textContent = best;
+
+      function reset() {
+        snake = [{ x: 8, y: 10 }, { x: 7, y: 10 }, { x: 6, y: 10 }];
+        dir = { x: 1, y: 0 }; nextDir = dir;
+        score = 0; over = false; running = false;
+        elScore.textContent = '0';
+        placeFood();
+        draw();
+      }
+
+      function placeFood() {
+        do {
+          food = { x: (Math.random() * N) | 0, y: (Math.random() * N) | 0 };
+        } while (snake.some(function (s) { return s.x === food.x && s.y === food.y; }));
+      }
+
+      function step() {
+        dir = nextDir;
+        const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+        if (head.x < 0 || head.y < 0 || head.x >= N || head.y >= N ||
+            snake.some(function (s) { return s.x === head.x && s.y === head.y; })) {
+          over = true; running = false;
+          if (score > best) { best = score; localStorage.setItem('nx_snake_best', String(best)); elBest.textContent = best; }
+          draw(); return;
+        }
+        snake.unshift(head);
+        if (head.x === food.x && head.y === food.y) {
+          score++; elScore.textContent = score;
+          speedMs = Math.max(70, speedMs - 2);
+          placeFood();
+        } else {
+          snake.pop();
+        }
+        draw();
+      }
+
+      function loop() {
+        clearInterval(timer);
+        timer = setInterval(function () { if (running && !over) step(); }, speedMs);
+      }
+
+      btnStart.addEventListener('click', function () {
+        if (over) reset();
+        running = true;
+        loop();
+      });
+
+      const turn = { arrowup: { x: 0, y: -1 }, arrowdown: { x: 0, y: 1 }, arrowleft: { x: -1, y: 0 }, arrowright: { x: 1, y: 0 } };
+      document.addEventListener('keydown', function (e) {
+        const k = e.key.toLowerCase();
+        const d = turn[k] || ({ w: { x: 0, y: -1 }, s: { x: 0, y: 1 }, a: { x: -1, y: 0 }, d: { x: 1, y: 0 } }[k]);
+        if (!d) return;
+        e.preventDefault();
+        if (d.x === -dir.x && d.y === -dir.y) return;
+        nextDir = d;
+      });
+
+      function draw() {
+        const pink = ACCENT('--pink', '#f472b6');
+        const vio = ACCENT('--vio-deep', '#8b5cf6');
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+        ctx.fillStyle = 'rgba(255,255,255,0.03)';
+        for (let i = 0; i < N; i++) {
+          for (let j = 0; j < N; j++) {
+            if ((i + j) % 2 === 0) ctx.fillRect(i * CELL, j * CELL, CELL, CELL);
+          }
+        }
+        snake.forEach(function (s, i) {
+          ctx.fillStyle = i === 0 ? pink : vio;
+          ctx.globalAlpha = 1 - (i / snake.length) * 0.6;
+          ctx.shadowColor = pink; ctx.shadowBlur = i === 0 ? 12 : 0;
+          ctx.fillRect(s.x * CELL + 1, s.y * CELL + 1, CELL - 2, CELL - 2);
+        });
+        ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+        ctx.shadowColor = pink; ctx.shadowBlur = 10;
+        ctx.fillStyle = pink;
+        ctx.beginPath(); ctx.arc(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2, CELL * 0.3, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+
+        if (over) {
+          ctx.fillStyle = 'rgba(6,5,10,0.55)';
+          ctx.fillRect(0, 0, cvs.width, cvs.height);
+          ctx.font = '700 30px Bahnschrift, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = pink; ctx.shadowColor = pink; ctx.shadowBlur = 16;
+          ctx.fillText('GAME OVER', cvs.width / 2, cvs.height / 2);
+          ctx.shadowBlur = 0;
+        } else if (!running) {
+          ctx.fillStyle = 'rgba(6,5,10,0.4)';
+          ctx.fillRect(0, 0, cvs.width, cvs.height);
+          ctx.font = '600 18px Cascadia Mono, monospace';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = pink; ctx.shadowColor = pink; ctx.shadowBlur = 10;
+          ctx.fillText('PRESS START', cvs.width / 2, cvs.height / 2);
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      reset();
+    })();
+  </script>
+</body>
+</html>

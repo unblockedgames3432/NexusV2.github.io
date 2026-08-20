@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Nexusv2</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f472b6'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M24 4l17.2 10v20L24 44 6.8 34V14z' fill='none' stroke='url(%23g)' stroke-width='3'/%3E%3Ccircle cx='24' cy='24' r='4' fill='url(%23g)'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="bg-stage">
+    <div class="aura aura-a"></div>
+    <div class="aura aura-b"></div>
+  </div>
+  <div class="vignette"></div>
+  <canvas id="particles"></canvas>
+  <div class="noise"></div>
+
+  <main class="screen">
+    <div class="hero">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <defs>
+            <linearGradient id="hexg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="var(--mark-pink, var(--pink))"/>
+              <stop offset="1" stop-color="var(--mark-vio, var(--vio-deep))"/>
+            </linearGradient>
+          </defs>
+          <path d="M24 4 L41.2 14 L41.2 34 L24 44 L6.8 34 L6.8 14 Z" stroke="url(#hexg)" stroke-width="1.6"/>
+          <path d="M24 12 L34.5 18 L34.5 30 L24 36 L13.5 30 L13.5 18 Z" stroke="var(--mark-pink, var(--pink))" stroke-width="1" opacity="0.55"/>
+          <circle cx="24" cy="24" r="4.5" fill="url(#hexg)"/>
+        </svg>
+      </div>
+
+      <h1 class="logo">Nexus<span class="v2">v2</span></h1>
+
+      <div class="actions">
+        <a class="btn btn-primary" id="btn-enter" href="home.html">Enter Nexus</a>
+        <button class="btn btn-outline" id="btn-admin">Admin Panel</button>
+      </div>
+      <button class="btn-quiet" id="btn-settings">Settings</button>
+    </div>
+  </main>
+
+  <section class="screen settings-screen hidden" id="screen-settings" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <header class="panel-head">
+        <div class="kicker">Options</div>
+        <h2 class="panel-title" id="settings-title">Settings</h2>
+      </header>
+
+      <div class="panel-body">
+        <div class="section">
+          <h3 class="sec-label">Display</h3>
+
+          <label class="row">
+            <span class="row-info">
+              <span class="row-name">Film grain</span>
+              <span class="row-sub">texture</span>
+            </span>
+            <span class="sw">
+              <input type="checkbox" data-pref="grain" />
+              <span class="sw-track"></span>
+              <span class="sw-knob"></span>
+            </span>
+          </label>
+
+          <div class="field">
+            <span class="row-name">Grain amount</span>
+            <div class="seg" data-pref="grainamt">
+              <button class="seg-btn" data-val="subtle" aria-pressed="false">Subtle</button>
+              <button class="seg-btn" data-val="std" aria-pressed="false">Standard</button>
+              <button class="seg-btn" data-val="heavy" aria-pressed="false">Heavy</button>
+            </div>
+          </div>
+
+          <label class="row">
+            <span class="row-info">
+              <span class="row-name">Background aura</span>
+              <span class="row-sub">background glow</span>
+            </span>
+            <span class="sw">
+              <input type="checkbox" data-pref="aura" />
+              <span class="sw-track"></span>
+              <span class="sw-knob"></span>
+            </span>
+          </label>
+
+          <label class="row">
+            <span class="row-info">
+              <span class="row-name">Logo glow</span>
+              <span class="row-sub">glow around logo</span>
+            </span>
+            <span class="sw">
+              <input type="checkbox" data-pref="glow" />
+              <span class="sw-track"></span>
+              <span class="sw-knob"></span>
+            </span>
+          </label>
+        </div>
+
+        <div class="section">
+          <h3 class="sec-label">Particles</h3>
+
+          <label class="row">
+            <span class="row-info">
+              <span class="row-name">Ambient particles</span>
+              <span class="row-sub">floating dots</span>
+            </span>
+            <span class="sw">
+              <input type="checkbox" data-pref="particles" />
+              <span class="sw-track"></span>
+              <span class="sw-knob"></span>
+            </span>
+          </label>
+
+          <div class="field">
+            <span class="row-name">Particle density</span>
+            <div class="seg" data-pref="density">
+              <button class="seg-btn" data-val="low" aria-pressed="false">Low</button>
+              <button class="seg-btn" data-val="med" aria-pressed="false">Medium</button>
+              <button class="seg-btn" data-val="high" aria-pressed="false">High</button>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="row-name">Particle speed</span>
+            <div class="seg" data-pref="speed">
+              <button class="seg-btn" data-val="drift" aria-pressed="false">Drift</button>
+              <button class="seg-btn" data-val="med" aria-pressed="false">Float</button>
+              <button class="seg-btn" data-val="fast" aria-pressed="false">Fast</button>
+            </div>
+          </div>
+
+          <label class="row">
+            <span class="row-info">
+              <span class="row-name">Particle bloom</span>
+              <span class="row-sub">glow on dots</span>
+            </span>
+            <span class="sw">
+              <input type="checkbox" data-pref="bloom" />
+              <span class="sw-track"></span>
+              <span class="sw-knob"></span>
+            </span>
+          </label>
+        </div>
+
+        <div class="section">
+          <h3 class="sec-label">Appearance</h3>
+
+          <div class="field">
+            <span class="row-name">Accent colour</span>
+
+            <div class="swatches" id="swatches"></div>
+
+            <div class="adv">
+              <button type="button" class="adv-toggle" id="adv-toggle" aria-expanded="false">
+                <span>Exact colour picker</span>
+                <span class="adv-chev" aria-hidden="true"></span>
+              </button>
+              <div class="adv-body" id="adv-body">
+                <div class="adv-row">
+                  <span class="swatch" id="swatch" aria-hidden="true"></span>
+                  <input type="color" data-pref="custom" id="color-input" value="#f472b6" aria-label="Exact accent colour" />
+                  <code class="adv-hex" id="hex-out">#F472B6</code>
+                </div>
+                <p class="adv-note">Custom base colour. The rest of the theme follows.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="sec-label">Motion</h3>
+
+          <label class="row">
+            <span class="row-info">
+              <span class="row-name">Reduce motion</span>
+              <span class="row-sub">turns off all animation</span>
+            </span>
+            <span class="sw">
+              <input type="checkbox" data-pref="motion" />
+              <span class="sw-track"></span>
+              <span class="sw-knob"></span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <footer class="panel-foot">
+        <button class="btn-link" id="btn-reset">Reset to defaults</button>
+        <button class="btn btn-primary" id="btn-done">Done</button>
+      </footer>
+    </div>
+  </section>
+
+  <section class="screen admin-screen hidden" id="screen-admin" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="admin-title">
+      <header class="panel-head">
+        <div class="kicker">Restricted Area</div>
+        <h2 class="panel-title" id="admin-title">Admin Panel</h2>
+      </header>
+
+      <div class="admin-lock" id="admin-lock">
+        <p class="admin-note">Enter the admin code to continue.</p>
+        <form id="lock-form" autocomplete="off">
+          <input type="password" class="code-input" id="lock-code" placeholder="admin code" maxlength="64" spellcheck="false" />
+          <button type="submit" class="btn btn-primary btn-block" id="lock-submit">Unlock</button>
+        </form>
+        <p class="lock-hint" id="lock-hint"></p>
+        <p class="admin-msg" id="lock-msg"></p>
+      </div>
+
+      <div class="admin-body hidden" id="admin-body">
+        <div class="section">
+          <h3 class="sec-label">System</h3>
+          <div class="stat"><span>Build</span><span id="sys-build">nexus v2.0</span></div>
+          <div class="stat"><span>Session</span><span id="sys-sess">—</span></div>
+          <div class="stat"><span>Public</span><span id="sys-tunnel">—</span></div>
+          <div class="admin-actions">
+            <button class="btn btn-outline btn-sm" id="adm-lock">Lock session</button>
+            <button class="btn btn-outline btn-sm" id="adm-open-settings">User settings</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="sec-label">Security</h3>
+          <form id="code-form" autocomplete="off">
+            <input type="password" class="code-input" id="adm-cur" placeholder="current code" maxlength="64" spellcheck="false" />
+            <input type="password" class="code-input" id="adm-new" placeholder="new code" maxlength="64" spellcheck="false" />
+            <input type="password" class="code-input" id="adm-conf" placeholder="confirm new code" maxlength="64" spellcheck="false" />
+            <div class="strength" id="strength"><span class="strength-bar"></span><span id="strength-label">weak</span></div>
+            <button type="submit" class="btn btn-outline btn-sm">Change code</button>
+            <p class="admin-msg" id="code-msg"></p>
+          </form>
+          <div class="field">
+            <span class="row-name">Max attempts</span>
+            <input type="number" data-apref="maxAtt" min="1" max="20" />
+          </div>
+          <div class="field">
+            <span class="row-name">Lockout minutes</span>
+            <input type="number" data-apref="lockMin" min="1" max="120" />
+          </div>
+          <div class="field">
+            <span class="row-name">Audit log</span>
+            <div class="log" id="adm-log"></div>
+            <button type="button" class="btn-link" id="adm-clear-log">Clear log</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3 class="sec-label">Data</h3>
+          <button type="button" class="btn btn-outline btn-sm" id="adm-export">Copy config</button>
+          <textarea class="cfg-area" id="adm-import" placeholder="paste config JSON here…" spellcheck="false"></textarea>
+          <button type="button" class="btn btn-outline btn-sm" id="adm-import-btn">Apply imported config</button>
+          <p class="admin-msg" id="import-msg"></p>
+          <div class="admin-actions">
+            <button type="button" class="btn btn-outline btn-sm danger" id="adm-wipe">Wipe all data</button>
+            <button type="button" class="btn btn-outline btn-sm danger hidden" id="adm-wipe-confirm">Confirm wipe</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="panel-foot">
+        <button class="btn-link" id="admin-close">Close</button>
+      </footer>
+    </div>
+  </section>
+
+  <section class="screen profile-screen hidden" id="screen-profile" aria-hidden="true">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="profile-title">
+      <header class="panel-head">
+        <div class="kicker">First Contact</div>
+        <h2 class="panel-title" id="profile-title">Claim your node</h2>
+      </header>
+
+      <div class="wiz-steps" id="wiz-steps">
+        <button type="button" class="wiz-dot active" data-step="0" aria-current="step" aria-label="Step 1: identity"></button>
+        <button type="button" class="wiz-dot" data-step="1" aria-label="Step 2: look"></button>
+        <button type="button" class="wiz-dot" data-step="2" aria-label="Step 3: enter"></button>
+      </div>
+
+      <div class="panel-body">
+        <div class="wiz-step active" data-step="0">
+          <div class="avatar-big" id="wiz-av-preview" style="--wiz-accent:#f472b6" aria-hidden="true">
+            <span class="av-glyph" id="wiz-av-glyph">✦</span>
+          </div>
+
+          <div class="field">
+            <span class="row-name">Handle</span>
+            <input class="wiz-input" id="wiz-handle" maxlength="24" placeholder="your handle" spellcheck="false" autocomplete="off" />
+            <p class="wiz-hint" id="wiz-handle-hint">Pick a handle — it's how the mesh finds you.</p>
+            <button type="button" class="btn-link wiz-dice" id="wiz-dice">surprise me</button>
+          </div>
+
+          <div class="field">
+            <span class="row-name">Display name</span>
+            <input class="wiz-input" id="wiz-display" maxlength="36" placeholder="what others call you" spellcheck="false" autocomplete="off" />
+          </div>
+
+          <div class="field">
+            <span class="row-name">Bio line</span>
+            <input class="wiz-input" id="wiz-bio" maxlength="160" placeholder="one line, tell the mesh who you are" spellcheck="false" />
+          </div>
+        </div>
+
+        <div class="wiz-step" data-step="1">
+          <div class="field">
+            <span class="row-name">Pick a symbol</span>
+            <div class="glyph-grid" id="wiz-glyphs"></div>
+          </div>
+          <div class="field">
+            <span class="row-name">Pick a colour</span>
+            <div class="swatches" id="wiz-swatches"></div>
+          </div>
+        </div>
+
+        <div class="wiz-step" data-step="2">
+          <div class="wiz-done">
+            <div class="done-ring" id="wiz-done-ring" style="--wiz-accent:#f472b6" aria-hidden="true">
+              <span class="av-glyph" id="wiz-done-glyph">✦</span>
+            </div>
+            <h3 class="wiz-done-title">Welcome to the mesh, <span id="wiz-done-name">Explorer</span>.</h3>
+            <p class="wiz-done-sub">Your node is registered and ready to sync.</p>
+          </div>
+        </div>
+      </div>
+
+      <footer class="panel-foot">
+        <button class="btn-link" id="wiz-back" hidden>Back</button>
+        <button class="btn btn-primary" id="wiz-next">Continue</button>
+      </footer>
+    </div>
+  </section>
+
+  <script src="js/theme.js"></script>
+  <script src="js/startup.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Pong — Nexusv2</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/game.css" />
+</head>
+<body>
+
+  <div class="bg-stage">
+    <div class="aura aura-a"></div>
+    <div class="aura aura-b"></div>
+  </div>
+  <div class="vignette"></div>
+  <div class="noise"></div>
+
+  <header class="gbar">
+    <a class="gbar-back" href="../home.html">← Nexus</a>
+    <span class="gbar-name">Pong</span>
+  </header>
+
+  <main class="gwrap">
+    <div class="gbox">
+      <canvas id="game" width="640" height="400"></canvas>
+    </div>
+    <div class="gstats">
+      <span>You <span class="gstat" id="score-p">0</span></span>
+      <span>·</span>
+      <span>CPU <span class="gstat" id="score-c">0</span></span>
+      <span>·</span>
+      <span>First to 7</span>
+    </div>
+    <div class="gopts">
+      <button class="gbtn" id="btn-start">Start</button>
+      <button class="gbtn ghost" id="btn-reset">Reset</button>
+    </div>
+    <p class="ghelp">move with W / S or ↑ / ↓ · first to 7 wins</p>
+  </main>
+
+  <footer class="gfoot">Nexusv2 · Pong</footer>
+
+  <script src="../js/theme.js"></script>
+  <script>
+    (function () {
+      const cvs = document.getElementById('game');
+      const ctx = cvs.getContext('2d');
+      const W = cvs.width, H = cvs.height;
+      const elP = document.getElementById('score-p');
+      const elC = document.getElementById('score-c');
+      const btnStart = document.getElementById('btn-start');
+      const btnReset = document.getElementById('btn-reset');
+
+      const P = { w: 10, h: 74 };
+      let p1 = 0, p2 = 0, ball, vx, vy, speed, running = false, over = false;
+      let p1y = H / 2 - P.h / 2, p2y = H / 2 - P.h / 2;
+      let keys = {};
+
+      const ACCENT = function (a, b) {
+        const c = getComputedStyle(document.documentElement);
+        return c.getPropertyValue(a).trim() || c.getPropertyValue(b).trim();
+      };
+
+      function resetBall() {
+        ball = { x: W / 2, y: H / 2 };
+        speed = 3.2;
+        const dir = Math.random() < 0.5 ? -1 : 1;
+        const ang = (Math.random() * 0.7 + 0.35) * (Math.random() < 0.5 ? -1 : 1);
+        vx = dir * speed * Math.cos(ang);
+        vy = speed * Math.sin(ang);
+      }
+
+      function reset() {
+        p1 = 0; p2 = 0;
+        p1y = H / 2 - P.h / 2; p2y = H / 2 - P.h / 2;
+        running = false; over = false;
+        elP.textContent = '0'; elC.textContent = '0';
+        resetBall();
+        draw();
+      }
+
+      btnStart.addEventListener('click', function () {
+        if (over) { reset(); }
+        running = true;
+        resetBall();
+      });
+      btnReset.addEventListener('click', reset);
+
+      document.addEventListener('keydown', function (e) { keys[e.key.toLowerCase()] = true; });
+      document.addEventListener('keyup', function (e) { keys[e.key.toLowerCase()] = false; });
+
+      function step() {
+        if (running && !over) {
+          if (keys['w'] || keys['arrowup']) p1y -= 5;
+          if (keys['s'] || keys['arrowdown']) p1y += 5;
+          p1y = Math.max(0, Math.min(H - P.h, p1y));
+
+          const target = ball.y - P.h / 2;
+          const diff = target - p2y;
+          p2y += Math.max(-4, Math.min(4, diff * 0.12));
+          p2y = Math.max(0, Math.min(H - P.h, p2y));
+
+          ball.x += vx;
+          ball.y += vy;
+          if (ball.y - 5 < 0) { ball.y = 5; vy = Math.abs(vy); }
+          if (ball.y + 5 > H) { ball.y = H - 5; vy = -Math.abs(vy); }
+
+          const hitP = vx < 0 && ball.x - 5 < P.w && ball.x - 5 > 0 && ball.y > p1y && ball.y < p1y + P.h;
+          const hitC = vx > 0 && ball.x + 5 > W - P.w && ball.x + 5 < W && ball.y > p2y && ball.y < p2y + P.h;
+          if (hitP || hitC) {
+            vx = (hitP ? 1 : -1) * Math.min(7, Math.abs(vx) + 0.35);
+            const off = ((ball.y - (hitP ? p1y : p2y)) / P.h - 0.5) * 1.4;
+            vy = speed * off;
+            speed = Math.min(7, speed + 0.15);
+          }
+
+          if (ball.x < -12) { p2++; elC.textContent = p2; score(); }
+          if (ball.x > W + 12) { p1++; elP.textContent = p1; score(); }
+        }
+        draw();
+        requestAnimationFrame(step);
+      }
+
+      function score() {
+        if (p1 >= 7 || p2 >= 7) { over = true; running = false; return; }
+        resetBall();
+      }
+
+      function draw() {
+        const pink = ACCENT('--pink', '#f472b6');
+        const vio = ACCENT('--vio-deep', '#8b5cf6');
+        ctx.clearRect(0, 0, W, H);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([6, 10]);
+        ctx.beginPath(); ctx.moveTo(W / 2, 0); ctx.lineTo(W / 2, H); ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = pink;
+        ctx.fillRect(0, p1y, P.w, P.h);
+        ctx.fillStyle = vio;
+        ctx.fillRect(W - P.w, p2y, P.w, P.h);
+
+        ctx.shadowColor = 'rgba(244,114,182,0.8)';
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = '#fff';
+        ctx.beginPath(); ctx.arc(ball.x, ball.y, 5, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+
+        if (over) {
+          ctx.fillStyle = 'rgba(6,5,10,0.55)';
+          ctx.fillRect(0, 0, W, H);
+          ctx.font = '700 34px Bahnschrift, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = pink;
+          ctx.shadowColor = pink; ctx.shadowBlur = 18;
+          ctx.fillText(p1 > p2 ? 'YOU WIN' : 'CPU WINS', W / 2, H / 2);
+          ctx.shadowBlur = 0;
+        } else if (!running) {
+          ctx.fillStyle = 'rgba(6,5,10,0.4)';
+          ctx.fillRect(0, 0, W, H);
+          ctx.font = '600 20px Cascadia Mono, monospace';
+          ctx.textAlign = 'center';
+          ctx.fillStyle = pink;
+          ctx.shadowColor = pink; ctx.shadowBlur = 12;
+          ctx.fillText('PRESS START', W / 2, H / 2);
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      reset();
+      requestAnimationFrame(step);
+    })();
+  </script>
+</body>
+</html>
