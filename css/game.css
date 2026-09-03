@@ -1,0 +1,202 @@
+/* =========================================================
+   NEXUS V2 · game pages
+   shared chrome for playable games. theme-aware via style.css.
+   ========================================================= */
+
+html, body { height: auto; min-height: 100%; }
+
+body {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* top bar */
+.gbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  background: rgba(6, 5, 10, 0.72);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.gbar-back {
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--muted);
+  transition: color 0.3s var(--ease);
+}
+
+.gbar-back:hover { color: var(--text); }
+
+.gbar-name {
+  font-family: var(--font-m);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-text, var(--pink-hi));
+}
+
+/* play area */
+.gwrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 32px 20px 48px;
+}
+
+.gbox {
+  position: relative;
+  border-radius: 16px;
+  padding: 4px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--pink) 35%, transparent), color-mix(in srgb, var(--vio-deep) 35%, transparent));
+  box-shadow: 0 24px 70px rgba(3, 2, 8, 0.6), 0 0 40px var(--dim);
+}
+
+.gbox canvas {
+  display: block;
+  border-radius: 12px;
+  background: #08060f;
+}
+
+.gstats {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.gstat { color: var(--accent-text, var(--pink-hi)); }
+
+.gopts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.gbtn {
+  cursor: pointer;
+  border-radius: 10px;
+  font-family: var(--font-m);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 11px 22px;
+  color: var(--on-accent, #17051e);
+  background: var(--btn-grad);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s var(--ease), filter 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+
+.gbtn:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+.gbtn.ghost {
+  color: var(--accent-text, var(--pink-hi));
+  background: color-mix(in srgb, var(--pink) 5%, transparent);
+  border-color: color-mix(in srgb, var(--pink) 40%, transparent);
+}
+
+.gbtn.ghost:hover {
+  background: color-mix(in srgb, var(--pink) 12%, transparent);
+  border-color: var(--pink);
+}
+
+.ghelp {
+  max-width: 420px;
+  text-align: center;
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  line-height: 1.9;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.gfoot {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+  font-family: var(--font-m);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* memory cards */
+.mgrid {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #08060f;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mcard {
+  width: 64px;
+  height: 80px;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--pink) 30%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--pink) 18%, transparent), color-mix(in srgb, var(--vio-deep) 18%, transparent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  user-select: none;
+  transition: transform 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+
+.mcard:hover { transform: translateY(-2px); border-color: var(--pink); }
+
+.mcard.matched {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .gbar { padding: 12px 16px; gap: 12px; }
+  .gbar-back { font-size: 10px; }
+  .gbar-name { font-size: 10px; }
+  .gwrap { padding: 20px 12px 32px; gap: 14px; }
+  .gbox { width: 100%; max-width: 100%; padding: 3px; }
+  .gbox canvas { width: 100%; height: auto; max-width: 100%; }
+  .gstats { gap: 10px; font-size: 10px; }
+  .gopts { gap: 8px; }
+  .gbtn { padding: 10px 16px; font-size: 10px; min-height: 44px; flex: 1; justify-content: center; }
+  .mgrid { gap: 8px; padding: 10px; }
+  .ghelp { font-size: 9px; padding: 0 8px; }
+}
+@media (max-width: 520px) {
+  .mcard { width: 52px; height: 66px; font-size: 24px; }
+  .gbox canvas { max-height: 56vh; }
+}
+@media (max-width: 380px) {
+  .gbar { padding: 10px 12px; }
+  .mcard { width: 44px; height: 58px; font-size: 20px; gap: 6px; }
+  .mgrid { gap: 6px; }
+}

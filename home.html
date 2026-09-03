@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Nexusv2 — Home</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23f472b6'/%3E%3Cstop offset='1' stop-color='%238b5cf6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M24 4l17.2 10v20L24 44 6.8 34V14z' fill='none' stroke='url(%23g)' stroke-width='3'/%3E%3Ccircle cx='24' cy='24' r='4' fill='url(%23g)'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/home.css" />
+</head>
+<body>
+
+  <div class="bg-stage">
+    <div class="aura aura-a"></div>
+    <div class="aura aura-b"></div>
+  </div>
+  <div class="vignette"></div>
+  <canvas id="particles"></canvas>
+  <div class="noise"></div>
+
+  <header class="nav">
+    <a class="nav-brand" href="index.html">
+      <svg class="brand-mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="brandg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="var(--mark-pink, var(--pink))"/>
+            <stop offset="1" stop-color="var(--mark-vio, var(--vio-deep))"/>
+          </linearGradient>
+        </defs>
+        <path d="M24 4 L41.2 14 L41.2 34 L24 44 L6.8 34 L6.8 14 Z" stroke="url(#brandg)" stroke-width="2.2"/>
+        <circle cx="24" cy="24" r="4.5" fill="url(#brandg)"/>
+      </svg>
+      <span class="nav-name">Nexus<span class="nav-v2">v2</span></span>
+    </a>
+
+    <nav class="tabs" role="tablist" aria-label="Primary">
+      <button class="tab-btn active" id="tab-btn-home" role="tab" aria-selected="true" aria-controls="tab-home" data-tab="home">Home</button>
+      <button class="tab-btn" id="tab-btn-game" role="tab" aria-selected="false" aria-controls="tab-game" data-tab="game">Game</button>
+      <button class="tab-btn" id="tab-btn-media" role="tab" aria-selected="false" aria-controls="tab-media" data-tab="media">Media</button>
+      <button class="tab-btn" id="tab-btn-challenges" role="tab" aria-selected="false" aria-controls="tab-challenges" data-tab="challenges">Challenges</button>
+      <button class="tab-btn" id="tab-btn-social" role="tab" aria-selected="false" aria-controls="tab-social" data-tab="social">Social</button>
+      <button class="tab-btn" id="tab-btn-profile" role="tab" aria-selected="false" aria-controls="tab-profile" data-tab="profile">Profile</button>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="btn btn-outline btn-sm" id="btn-admin">Admin</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="tab-panel active" id="tab-home" role="tabpanel" aria-labelledby="tab-btn-home" data-panel="home">
+      <div class="hero">
+        <p class="kicker">System online — <span id="home-handle">@operator</span></p>
+        <h1 class="hero-title">Welcome to <span class="hero-grad">Nexusv2</span></h1>
+        <div class="actions">
+          <button class="btn btn-primary" data-home-tab="game">Browse games</button>
+          <button class="btn btn-outline" data-home-tab="media">Open media</button>
+          <button class="btn btn-outline" data-home-tab="profile">Edit profile</button>
+        </div>
+
+        <div class="chips">
+          <span class="chip"><i class="chip-dot"></i><span id="home-game-count">0 games</span></span>
+          <span class="chip"><i class="chip-dot"></i><span id="home-media-count">0 media</span></span>
+          <span class="chip"><i class="chip-dot"></i><span id="home-level">level 1</span></span>
+        </div>
+      </div>
+
+      <section class="home-stats" id="home-stats">
+        <div class="home-stat"><strong id="hs-games">0</strong><span>Games</span></div>
+        <div class="home-stat"><strong id="hs-media">0</strong><span>Media</span></div>
+        <div class="home-stat"><strong id="hs-ach">0/8</strong><span>Achievements</span></div>
+        <div class="home-stat"><strong id="hs-level">1</strong><span>Level</span></div>
+      </section>
+
+      <section class="xp-section">
+        <div class="xp-head"><span>Level <strong id="home-xp-level">1</strong></span><span id="home-xp-text">0 / 4 XP</span></div>
+        <div class="xp-bar"><div class="xp-fill" id="home-xp-fill"></div></div>
+      </section>
+
+      <section>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px"><h3 class="sec-label" style="margin:0">Featured</h3><button class="btn-link" data-home-tab="game">View all →</button></div>
+        <div class="grid" id="home-featured"></div>
+      </section>
+
+      <section>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px"><h3 class="sec-label" style="margin:0">Achievements</h3><button class="btn-link" data-home-tab="profile">View all →</button></div>
+        <div class="achievement-list" id="home-achievements"></div>
+      </section>
+
+    </section>
+
+    <section class="tab-panel" id="tab-game" role="tabpanel" aria-labelledby="tab-btn-game" data-panel="game">
+      <div class="hero">
+        <p class="kicker">Game</p>
+        <h1 class="hero-title">Your <span class="hero-grad">Game Hub</span></h1>
+        <p class="lede">
+          Launch titles straight from the library — every game is a
+          file in the games folder, so this works anywhere.
+        </p>
+
+        <div class="chips">
+          <span class="chip"><i class="chip-dot"></i><span id="game-count">0 games</span></span>
+        </div>
+      </div>
+
+      <p class="games-status" id="games-status"></p>
+      <section class="grid" id="game-grid"></section>
+
+      <p class="games-hint" id="games-hint">
+        Add games from the <button type="button" class="linklike" id="games-hint-admin">admin panel</button>
+        (upload a self-contained HTML file, or link an existing file in the games folder).
+      </p>
+    </section>
+
+    <section class="tab-panel" id="tab-media" role="tabpanel" aria-labelledby="tab-btn-media" data-panel="media">
+      <div class="hero">
+        <p class="kicker">Media</p>
+        <h1 class="hero-title">Your <span class="hero-grad">Media Deck</span></h1>
+        <p class="lede">
+          Upload MP3/MP4/webm files or add video links.
+        </p>
+
+        <div class="chips">
+          <span class="chip"><i class="chip-dot"></i><span id="media-count">0 items</span></span>
+        </div>
+      </div>
+
+      <div class="media-toolbar">
+        <div class="media-tools">
+          <input type="text" id="media-search" placeholder="search library…" autocomplete="off" spellcheck="false" />
+          <div class="seg" id="media-filter">
+            <button class="seg-btn active" data-val="all">All</button>
+            <button class="seg-btn" data-val="audio">Audio</button>
+            <button class="seg-btn" data-val="video">Video</button>
+            <button class="seg-btn" data-val="link">Links</button>
+          </div>
+          <select id="media-sort" title="Sort order">
+            <option value="kind" selected>Type / Newest</option>
+            <option value="new">Newest</option>
+            <option value="old">Oldest</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="media-status" id="media-status"></p>
+      <section class="grid media-grid" id="media-grid"></section>
+
+      <div class="media-stage hidden" id="media-stage">
+        <div class="media-player" id="media-player"></div>
+        <div class="media-info" id="media-info">
+          <span class="media-title" id="media-title"></span>
+          <a class="btn-link" id="media-open" target="_blank" rel="noopener">open source</a>
+        </div>
+      </div>
+    </section>
+    <section class="tab-panel" id="tab-social" role="tabpanel" aria-labelledby="tab-btn-social" data-panel="social">
+      <div class="hero">
+        <p class="kicker">Social</p>
+        <h1 class="hero-title">Your <span class="hero-grad">Social Grid</span></h1>
+        <p class="lede">
+          Text friends, follow groups and rate the game library from
+          one live local feed.
+        </p>
+
+        <div class="chips">
+          <span class="chip"><i class="chip-dot"></i><span id="online-count">0 online</span></span>
+          <span class="chip"><i class="chip-dot"></i><span id="friend-count">0 friends</span></span>
+          <span class="chip"><i class="chip-dot"></i><span id="message-count">0 messages</span></span>
+          <span class="chip"><i class="chip-dot"></i><span id="rating-count">0 ratings</span></span>
+        </div>
+      </div>
+
+      <div class="social-wip">
+        <div class="social-wip-card">
+          <span class="social-wip-badge">WIP</span>
+          <h3>Social — Work in Progress</h3>
+          <p>Texting, friends and ratings are being rebuilt. Your profile, games and media already save — even in private mode — and sync when the live server returns.</p>
+        </div>
+      </div>
+
+      <section class="social-shell wip-dim">
+        <article class="card social-card chat-card">
+          <div class="social-head">
+            <div>
+              <h3 class="card-title">Texting</h3>
+              <p class="card-sub">Live room chat with friend or group routing.</p>
+            </div>
+            <div class="social-head-actions">
+              <span class="live-dot off" id="social-live">offline</span>
+              <select id="chat-target" title="Message target"></select>
+            </div>
+          </div>
+          <div class="channel-pills" id="group-list" role="tablist"></div>
+          <div class="chat-log" id="chat-log" aria-live="polite"></div>
+          <form class="chat-form" id="chat-form" autocomplete="off">
+            <input type="text" id="chat-name" maxlength="24" placeholder="@operator" spellcheck="false" />
+            <input type="text" id="chat-input" maxlength="240" placeholder="type a message..." spellcheck="true" />
+            <button type="submit" class="btn btn-primary btn-sm">Send</button>
+          </form>
+        </article>
+
+        <article class="card social-card network-card">
+          <div class="social-head">
+            <div>
+              <h3 class="card-title">Network</h3>
+              <p class="card-sub">Request, accept and message friends.</p>
+            </div>
+            <span class="net-badge" id="request-badge" hidden></span>
+          </div>
+          <div class="people-list" id="friend-list"></div>
+          <form class="mini-form" id="friend-form" autocomplete="off">
+            <input type="text" id="friend-name" maxlength="24" placeholder="add by handle" spellcheck="false" />
+            <button type="submit" class="btn btn-outline btn-sm">Add</button>
+          </form>
+          <p class="mini-form-msg" id="friend-msg" hidden></p>
+        </article>
+
+        <article class="card social-card ratings-card">
+          <h3 class="card-title">Game Ratings</h3>
+          <p class="card-sub">Rate games and see what is winning.</p>
+          <div class="rating-list" id="rating-list"></div>
+        </article>
+
+        <article class="card social-card activity-card">
+          <h3 class="card-title">Activity</h3>
+          <p class="card-sub">Recent messages, joins and ratings.</p>
+          <div class="activity-list" id="activity-list"></div>
+        </article>
+      </section>
+    </section>
+
+    <section class="tab-panel" id="tab-challenges" role="tabpanel" aria-labelledby="tab-btn-challenges" data-panel="challenges">
+      <div class="hero">
+        <p class="kicker">Challenges</p>
+        <h1 class="hero-title">Earn <span class="hero-grad">XP</span></h1>
+        <p class="lede">Complete hourly, daily and weekly challenges — XP saves locally, even in private mode.</p>
+        <div class="chips"><span class="chip"><i class="chip-dot"></i><span id="ch-xp">0 XP</span></span><span class="chip"><i class="chip-dot"></i><span id="ch-level">level 1</span></span></div>
+      </div>
+      <div class="card" style="text-align:center;border-style:dashed;background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.28);margin-bottom:16px">
+        <span style="font-family:var(--font-m);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#fbbf24">TESTING</span>
+        <p style="color:var(--muted);margin-top:6px;font-size:13px">Challenges are in testing</p>
+        <button class="btn btn-outline btn-sm" id="test-chal-info" style="margin-top:10px">What happens?</button>
+      </div>
+      <div class="challenges-grid" id="challenges-grid"></div>
+      <p class="challenge-hint">just play — xp ticks every 5 mins on its own, hit claim when full</p>
+      <div style="display:flex;justify-content:center;margin-top:14px"><button class="btn btn-outline btn-sm" id="reset-chals">Reset XP & Quests</button></div>
+    </section>
+
+
+
+    <section class="tab-panel" id="tab-profile" role="tabpanel" aria-labelledby="tab-btn-profile" data-panel="profile">
+      <div class="hero">
+        <div class="pfp" id="profile-hero-pic" aria-hidden="true">
+          <div class="pfp-inner">
+            <svg class="pfp-mark" viewBox="0 0 48 48" fill="none">
+              <defs>
+                <linearGradient id="pfpg" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="var(--mark-pink, var(--pink))"/>
+                  <stop offset="1" stop-color="var(--mark-vio, var(--vio-deep))"/>
+                </linearGradient>
+              </defs>
+              <path d="M24 4 L41.2 14 L41.2 34 L24 44 L6.8 34 L6.8 14 Z" stroke="url(#pfpg)" stroke-width="2.4"/>
+              <circle cx="24" cy="24" r="4.5" fill="url(#pfpg)"/>
+            </svg>
+          </div>
+        </div>
+
+        <p class="kicker">Profile</p>
+        <h1 class="hero-title">Hello, <span class="hero-grad" id="profile-hero-name">@operator</span></h1>
+        <p class="lede" id="profile-hero-bio">
+          Handle, avatar and activity — everything this node presents to the mesh.
+        </p>
+
+        <div class="chips">
+          <span class="chip"><i class="chip-dot"></i><span id="profile-chip-handle">@operator</span></span>
+          <span class="chip"><i class="chip-dot"></i><span id="profile-chip-status">online</span></span>
+          <span class="chip"><i class="chip-dot"></i><span id="profile-chip-level">level 1</span></span>
+        </div>
+      </div>
+
+      <section class="profile-shell">
+        <article class="card profile-card profile-editor">
+          <div class="profile-edit-head">
+            <div class="profile-preview" id="profile-preview" aria-hidden="true"></div>
+            <div>
+              <h3 class="card-title">Identity</h3>
+              <p class="card-sub">Username, picture, bio and presence.</p>
+            </div>
+          </div>
+
+          <form class="profile-form" id="profile-form" autocomplete="off">
+            <label>
+              <span class="mf-label">Username</span>
+              <input type="text" id="profile-handle" maxlength="24" placeholder="@operator" spellcheck="false" />
+            </label>
+            <label>
+              <span class="mf-label">Display name</span>
+              <input type="text" id="profile-display" maxlength="36" placeholder="Operator" spellcheck="false" />
+            </label>
+            <label>
+              <span class="mf-label">Bio</span>
+              <textarea id="profile-bio" maxlength="160" placeholder="Write a short profile bio..." spellcheck="true"></textarea>
+            </label>
+            <div class="profile-row">
+              <label>
+                <span class="mf-label">Status</span>
+                <select id="profile-status">
+                  <option value="online">Online</option>
+                  <option value="busy">Busy</option>
+                  <option value="away">Away</option>
+                  <option value="offline">Offline</option>
+                </select>
+              </label>
+              <label>
+                <span class="mf-label">Accent</span>
+                <input type="color" id="profile-accent" value="#f472b6" />
+              </label>
+            </div>
+            <label>
+              <span class="mf-label">Profile picture</span>
+              <input type="file" id="profile-avatar" accept="image/*" />
+            </label>
+            <div class="profile-actions">
+              <button type="submit" class="btn btn-primary btn-sm">Save profile</button>
+              <button type="button" class="btn btn-outline btn-sm" id="profile-clear-avatar">Clear picture</button>
+            </div>
+            <p class="profile-msg" id="profile-msg"></p>
+          </form>
+        </article>
+
+        <article class="card profile-card">
+          <h3 class="card-title">Stats</h3>
+          <p class="card-sub">Everything this local profile has done.</p>
+          <div class="stat-grid" id="profile-stats"></div>
+        </article>
+
+        <article class="card profile-card achievements-card">
+          <h3 class="card-title">Achievements</h3>
+          <p class="card-sub">Unlocked from messages, ratings and setup.</p>
+          <div class="achievement-list" id="achievement-list"></div>
+        </article>
+
+        <article class="card profile-card">
+          <h3 class="card-title">Recent Activity</h3>
+          <p class="card-sub">Your latest profile and social actions.</p>
+          <div class="profile-activity" id="profile-activity"></div>
+        </article>
+      </section>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>Nexusv2</span>
+    <span class="foot-sep" aria-hidden="true">·</span>
+    <span>home preview</span>
+  </footer>
+
+  <div class="modal hidden" id="admin-modal" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="admin-modal-title">
+      <header class="modal-head">
+        <div class="kicker">Restricted Area</div>
+        <h2 class="modal-title" id="admin-modal-title">Admin Panel</h2>
+      </header>
+
+      <div class="admin-lock" id="admin-lock">
+        <p class="admin-note">Enter the admin code to manage the library.</p>
+        <form id="admin-lock-form" autocomplete="off">
+          <input type="password" class="code-input" id="admin-code" placeholder="admin code" maxlength="64" spellcheck="false" />
+          <button type="submit" class="btn btn-primary btn-block" id="admin-unlock">Unlock</button>
+        </form>
+        <p class="modal-msg" id="admin-lock-msg"></p>
+      </div>
+
+      <div class="admin-body hidden" id="admin-body">
+        <div class="admin-tabs" role="tablist" aria-label="Admin sections">
+          <button class="admin-tab active" id="atab-library" role="tab" aria-selected="true" data-atab="library">Library</button>
+          <button class="admin-tab" id="atab-addgame" role="tab" aria-selected="false" data-atab="addgame">Add Game</button>
+          <button class="admin-tab" id="atab-addmedia" role="tab" aria-selected="false" data-atab="addmedia">Add Media</button>
+        </div>
+
+        <div class="admin-pane active" data-apane="library">
+          <div class="lib-group">
+            <h3 class="sec-label">Games</h3>
+            <div class="lib-list" id="lib-games"></div>
+          </div>
+          <div class="lib-group">
+            <h3 class="sec-label">Media</h3>
+            <div class="lib-list" id="lib-media"></div>
+          </div>
+          <p class="modal-msg" id="lib-msg"></p>
+        </div>
+
+        <div class="admin-pane" data-apane="addgame">
+          <div class="section">
+            <div class="modal-field">
+              <span class="mf-label">Add a game</span>
+              <div class="seg" id="ag-kind">
+                <button type="button" class="seg-btn active" data-val="upload">Upload file</button>
+                <button type="button" class="seg-btn" data-val="link">Link to file</button>
+              </div>
+            </div>
+
+            <form id="ag-form" autocomplete="off">
+              <label class="modal-field">
+                <span class="mf-label">Title</span>
+                <input type="text" id="ag-title" maxlength="80" placeholder="game title" required spellcheck="false" />
+              </label>
+              <label class="modal-field">
+                <span class="mf-label">Description</span>
+                <input type="text" id="ag-desc" maxlength="200" placeholder="short description" spellcheck="false" />
+              </label>
+
+              <label class="modal-field" id="ag-file-wrap">
+                <span class="mf-label">Self-contained HTML game</span>
+                <input type="file" id="ag-file" accept=".html,.htm,text/html" />
+              </label>
+
+              <label class="modal-field hidden" id="ag-url-wrap">
+                <span class="mf-label">Existing file in the games folder</span>
+                <input type="text" id="ag-url" maxlength="500" placeholder="games/name.html" spellcheck="false" />
+              </label>
+
+              <div class="modal-row">
+                <label class="modal-field">
+                  <span class="mf-label">Accent</span>
+                  <input type="color" id="ag-accent" value="#f472b6" />
+                </label>
+                <label class="modal-field">
+                  <span class="mf-label">Icon (emoji)</span>
+                  <input type="text" id="ag-icon" maxlength="8" value="🎮" spellcheck="false" />
+                </label>
+              </div>
+
+              <div class="modal-row icon-pick-row">
+                <label class="modal-field">
+                  <span class="mf-label">Icon image</span>
+                  <input type="file" id="ag-icon-file" accept="image/*" />
+                  <span class="mf-hint">optional — overrides emoji</span>
+                </label>
+                <label class="modal-field">
+                  <span class="mf-label">…or image URL</span>
+                  <input type="text" id="ag-icon-url" maxlength="2000" placeholder="https://… or games/icons/…" spellcheck="false" />
+                </label>
+              </div>
+
+              <p class="modal-msg" id="ag-msg"></p>
+
+              <div class="modal-actions">
+                <button type="submit" class="btn btn-primary btn-sm">Add game</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="admin-pane" data-apane="addmedia">
+          <div class="section">
+            <div class="modal-field">
+              <span class="mf-label">Add media</span>
+              <div class="seg" id="mm-kind">
+                <button type="button" class="seg-btn active" data-val="upload">Upload file</button>
+                <button type="button" class="seg-btn" data-val="link">Video link</button>
+              </div>
+            </div>
+
+            <form id="media-form" autocomplete="off">
+              <label class="modal-field">
+                <span class="mf-label">Title</span>
+                <input type="text" id="mm-title" maxlength="120" placeholder="media title" required spellcheck="false" />
+              </label>
+
+              <label class="modal-field" id="mm-file-wrap">
+                <span class="mf-label">MP3 / MP4 / webm / ogg / m4a …</span>
+                <input type="file" id="mm-file" accept="audio/*,video/*,.mp3,.mp4,.webm,.ogg,.m4a,.wav,.flac,.aac,.mov,.m4v" />
+              </label>
+
+              <label class="modal-field hidden" id="mm-url-wrap">
+                <span class="mf-label">Direct video/audio link</span>
+                <input type="url" id="mm-url" maxlength="2000" placeholder="https://…/clip.mp4" spellcheck="false" />
+              </label>
+
+              <div class="modal-row">
+                <label class="modal-field">
+                  <span class="mf-label">Accent</span>
+                  <input type="color" id="mm-accent" value="#22d3ee" />
+                </label>
+                <label class="modal-field">
+                  <span class="mf-label">Icon (emoji)</span>
+                  <input type="text" id="mm-icon" maxlength="8" value="🎵" spellcheck="false" />
+                </label>
+              </div>
+
+              <p class="modal-msg" id="mm-msg"></p>
+
+              <div class="modal-actions">
+                <button type="submit" class="btn btn-primary btn-sm">Add to library</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <footer class="panel-foot">
+        <button class="btn-link" id="admin-lockout">Lock session</button>
+        <button class="btn btn-primary" id="admin-done">Done</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/theme.js"></script>
+  <script src="games/games.js"></script>
+  <script src="media/media.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

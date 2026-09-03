@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Memory — Nexusv2</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/game.css" />
+</head>
+<body>
+
+  <div class="bg-stage">
+    <div class="aura aura-a"></div>
+    <div class="aura aura-b"></div>
+  </div>
+  <div class="vignette"></div>
+  <div class="noise"></div>
+
+  <header class="gbar">
+    <a class="gbar-back" href="../home.html">← Nexus</a>
+    <span class="gbar-name">Memory</span>
+  </header>
+
+  <main class="gwrap">
+    <div class="mgrid" id="board"></div>
+    <div class="gstats">
+      <span>Moves <span class="gstat" id="moves">0</span></span>
+      <span>·</span>
+      <span>Pairs <span class="gstat" id="pairs">0</span><span>/6</span></span>
+    </div>
+    <div class="gopts">
+      <button class="gbtn" id="btn-restart">New game</button>
+    </div>
+    <p class="ghelp">flip cards · match all 6 pairs</p>
+  </main>
+
+  <footer class="gfoot">Nexusv2 · Memory</footer>
+
+  <script src="../js/theme.js"></script><script src="../js/xp.js"></script>
+  <script>
+    (function () {
+      const board = document.getElementById('board');
+      const elMoves = document.getElementById('moves');
+      const elPairs = document.getElementById('pairs');
+      const EMOJI = ['🚀', '🌀', '⚡', '🌙', '👾', '💎'];
+
+      let cards = [], first = null, lock = false, moves = 0, matched = 0;
+
+      function deal() {
+        cards = EMOJI.concat(EMOJI).map(function (e, i) { return { e: e, i: i }; });
+        for (let i = cards.length - 1; i > 0; i--) {
+          const j = (Math.random() * (i + 1)) | 0;
+          const t = cards[i]; cards[i] = cards[j]; cards[j] = t;
+        }
+        first = null; lock = false; moves = 0; matched = 0;
+        elMoves.textContent = '0'; elPairs.textContent = '0';
+        board.innerHTML = '';
+        board.style.gridTemplateColumns = 'repeat(' + Math.min(4, cards.length / 2) + ', auto)';
+        cards.forEach(function (c) {
+          const el = document.createElement('button');
+          el.className = 'mcard';
+          el.textContent = '?';
+          el.addEventListener('click', function () { flip(el, c); });
+          board.appendChild(el);
+        });
+      }
+
+      function flip(el, c) {
+        if (lock || el.classList.contains('matched')) return;
+        if (first && first.el === el) return;
+        el.textContent = c.e;
+        if (!first) { first = { el: el, c: c }; return; }
+        moves++; elMoves.textContent = moves;
+        if (first.c.e === c.e) {
+          first.el.classList.add('matched');
+          el.classList.add('matched');
+          matched++; elPairs.textContent = matched;
+          first = null;
+        } else {
+          lock = true;
+          const a = first; first = null;
+          setTimeout(function () {
+            a.el.textContent = '?';
+            el.textContent = '?';
+            lock = false;
+          }, 600);
+        }
+      }
+
+      document.getElementById('btn-restart').addEventListener('click', deal);
+      deal();
+    })();
+  </script>
+</body>
+</html>
