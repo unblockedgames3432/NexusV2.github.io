@@ -194,7 +194,7 @@
             <span class="row-name">Mode</span>
             <select class="wiz-input" id="settings-mode" data-pref="mode">
               <option value="home">Home — dark, normal Nexus</option>
-              <option value="school">School — light, Drive-style</option>
+              <option value="school">School — light, looks like Drive</option>
             </select>
             <p class="wiz-hint">This setting is experimental</p>
             <p class="wiz-hint">Home is dark, School is light to blend in</p>
@@ -322,7 +322,7 @@
             <span class="row-name">Mode</span>
             <select class="wiz-input" id="wiz-mode">
               <option value="home">Home — normal look, dark</option>
-              <option value="school">School — light, Drive-style</option>
+              <option value="school">School — looks like Drive, light to bypass filters</option>
             </select>
             <p class="wiz-hint">This setting is experimental</p>
             <p class="wiz-hint">you can change it later in settings</p>
@@ -358,19 +358,12 @@
     </div>
   </section>
 
-  <div class="modal hidden school-mode-popup" id="screen-mode-popup" aria-hidden="true">
-    <div class="panel school-mode-card" role="dialog" aria-modal="true" aria-labelledby="mode-popup-title">
-      <div class="school-mode-icon" aria-hidden="true">
-        <svg viewBox="0 0 48 48" width="28" height="28">
-          <path d="M24 5 42 35H6L24 5Z" fill="#0F9D58"/>
-          <path d="M6 35h36L33 48H15L6 35Z" fill="#F4B400"/>
-          <path d="M24 5 33 21 24 37 15 21 24 5Z" fill="#4285F4"/>
-        </svg>
-      </div>
-      <div class="school-mode-kicker">School mode</div>
-      <h2 class="panel-title" id="mode-popup-title">Switch to School Mode?</h2>
-      <p class="school-mode-description">This setting is experimental and may break some features.</p>
-      <p class="school-mode-note">You can switch back to Home Mode anytime from Settings.</p>
+  <div class="modal hidden" id="screen-mode-popup" aria-hidden="true" style="position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(4,3,8,.6);backdrop-filter:blur(8px)">
+    <div class="panel" role="dialog" aria-modal="true" aria-labelledby="mode-popup-title" style="max-width:380px;width:100%;text-align:center">
+      <div style="width:44px;height:44px;margin:0 auto 14px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 4px 16px rgba(0,0,0,.2)">🎒</div>
+      <h2 class="panel-title" id="mode-popup-title" style="text-align:center;font-size:20px">go school mode?</h2>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-top:10px">makes it look like Drive — that's why it flips to light. still experimental so some things might be janky.</p>
+      <p style="color:var(--faint);font-size:11px;margin-top:8px">you can flip back to home in settings anytime</p>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:20px">
         <button class="btn btn-outline" id="mode-cancel" style="flex:1">nah</button>
         <button class="btn btn-primary" id="mode-confirm" style="flex:1">yeah</button>
